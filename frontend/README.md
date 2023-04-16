@@ -31,4 +31,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 |:---------:|:-------:|:-------------------------------------------:|
 | Kabduali  | Zarina  | [Click Here](https://github.com/ZarinaKab)  |
 | Yermekali | Arailym | [Click Here](https://github.com/arraxeess) |
-|   Beken   |  Leile  | [Click Here](https://github.com/LeilaBeken) |
+|   Beken   |  Leila  | [Click Here](https://github.com/LeilaBeken) |
