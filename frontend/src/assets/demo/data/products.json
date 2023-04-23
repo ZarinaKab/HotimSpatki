@@ -3,9 +3,9 @@
 		{
 			"id": "1000",
 			"code": "f230fh0g3",
-			"name": "Bamboo Watch",
+			"name": "Teacher",
 			"description": "Product Description",
-			"image": "bamboo-watch.jpg",
+			"image": "https://avatars.mds.yandex.net/i?id=63f8c7c80397e2b1093d3486efdda5bd9442704a-9245818-images-thumbs&n=13",
 			"price": 65,
 			"category": "Accessories",
 			"quantity": 24,

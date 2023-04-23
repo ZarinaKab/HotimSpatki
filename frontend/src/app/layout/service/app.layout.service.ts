@@ -5,7 +5,6 @@ export interface AppConfig {
     inputStyle: string;
     colorScheme: string;
     theme: string;
-    ripple: boolean;
     menuMode: string;
     scale: number;
 }
@@ -17,6 +16,7 @@ interface LayoutState {
     configSidebarVisible: boolean;
     staticMenuMobileActive: boolean;
     menuHoverActive: boolean;
+    premium: boolean
 }
 
 @Injectable({
@@ -25,11 +25,10 @@ interface LayoutState {
 export class LayoutService {
 
     config: AppConfig = {
-        ripple: false,
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'light',
-        theme: 'lara-light-indigo',
+        theme: 'md-dark-indigo',
         scale: 14,
     };
 
@@ -39,7 +38,8 @@ export class LayoutService {
         profileSidebarVisible: false,
         configSidebarVisible: false,
         staticMenuMobileActive: false,
-        menuHoverActive: false
+        menuHoverActive: false,
+        premium: false
     };
 
     private configUpdate = new Subject<AppConfig>();
@@ -75,6 +75,11 @@ export class LayoutService {
         if (this.state.profileSidebarVisible) {
             this.overlayOpen.next(null);
         }
+    }
+
+    showPremium(){
+        this.state.premium = !this.state.premium;
+        
     }
 
     showConfigSidebar() {

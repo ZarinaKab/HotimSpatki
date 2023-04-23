@@ -3,8 +3,6 @@ interface InventoryStatus {
     value: string;
 }
 
-
-// My tables
 export interface Product {
     id?: string;
     code?: string;

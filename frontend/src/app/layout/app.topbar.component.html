@@ -1,8 +1,5 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img
-            src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg"
-            alt="logo">
         <span>HotimSpatki</span>
     </a>
 
@@ -21,24 +18,14 @@
                                             <i class="pi pi-search"></i>
                     </span>
 
-    <div #topbarmenu class="layout-topbar-menu"
-         [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}" >
-                <button class="p-link layout-topbar-button">
-                    <i class="pi pi-heart"></i>
-                    <span>Favorites</span>
-                </button>
-
+    <div #topbarmenu class="layout-topbar-menu" >
+        <button class="p-link layout-topbar-button" (click)="changeTheme('tailwind-light', 'light')">Premium</button>
         <button class="p-link layout-topbar-button" >
             <i class="pi pi-shopping-cart"></i>
         </button>
         <button class="p-link layout-topbar-button" >
                 <i class="pi pi-user" (click) = "menuVisible = !menuVisible"></i>
-
         </button>
-        <!--        <button class="p-link layout-topbar-button" [routerLink]="''">-->
-        <!--            <i class="pi pi-cog"></i>-->
-        <!--            <span>Settings</span>-->
-        <!--        </button>-->
     </div>
     <div *ngIf="menuVisible">
         <p-tieredMenu [model]="tieredItems"></p-tieredMenu>
