@@ -10,6 +10,7 @@ import { AppMenuComponent } from './app.menu.component';
     templateUrl: './app.topbar.component.html',
 })
 export class AppTopBarComponent{
+    changeThemePremium = true;
     menuVisible = false;
     premiumVisible = false;
     tieredItems: MenuItem[] = [];
@@ -49,13 +50,15 @@ export class AppTopBarComponent{
         ]
     }
     changeTheme(theme: string, colorScheme: string) {
-        const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
-        const newHref = themeLink.getAttribute('href')!.replace(this.layoutService.config.theme, theme);
-        this.layoutService.config.colorScheme
-        AppConfigComponent.replaceThemeLink(newHref, () => {
-            this.layoutService.config.theme = theme;
-            this.layoutService.config.colorScheme = colorScheme;
-            this.layoutService.onConfigUpdate();
-        });
+        if(this.changeThemePremium == true) {
+            const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
+            const newHref = themeLink.getAttribute('href')!.replace(this.layoutService.config.theme, theme);
+            this.layoutService.config.colorScheme
+            AppConfigComponent.replaceThemeLink(newHref, () => {
+                this.layoutService.config.theme = theme;
+                this.layoutService.config.colorScheme = colorScheme;
+                this.layoutService.onConfigUpdate();
+            });
+        }
     }
 }
