@@ -28,7 +28,7 @@ export class LayoutService {
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'light',
-        theme: 'md-dark-indigo',
+        theme: 'mdc-light-indigo',
         scale: 14,
     };
 
@@ -79,7 +79,7 @@ export class LayoutService {
 
     showPremium(){
         this.state.premium = !this.state.premium;
-        
+
     }
 
     showConfigSidebar() {

@@ -4,12 +4,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { ProductService } from './demo/service/product.service';
-import { CountryService } from './demo/service/country.service';
-import { CustomerService } from './demo/service/customer.service';
-import { PhotoService } from './demo/service/photo.service';
+import { CartService } from './demo/service/cart.service';
+
+import { AboutUsComponent } from './demo/components/about-us/about-us.component';
 @NgModule({
     declarations: [
-        AppComponent, NotfoundComponent
+        AppComponent, NotfoundComponent, AboutUsComponent
     ],
     imports: [
         AppRoutingModule,
@@ -17,7 +17,10 @@ import { PhotoService } from './demo/service/photo.service';
     ],
     providers: [
         //{ provide: LocationStrategy, useClass: HashLocationStrategy },
-        CountryService, CustomerService, PhotoService, ProductService
+        ProductService, CartService
+    ],
+    exports: [
+        AboutUsComponent
     ],
     bootstrap: [AppComponent]
 })

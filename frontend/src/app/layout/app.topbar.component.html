@@ -19,10 +19,9 @@
                     </span>
 
     <div #topbarmenu class="layout-topbar-menu" >
-        <button class="p-link layout-topbar-button" (click)="changeTheme('tailwind-light', 'light')">Premium</button>
-        <button class="p-link layout-topbar-button" >
-<!--            [routerLink]="['/user/bob']"-->
-            <i class="pi pi-shopping-cart" ></i>
+        <button class="p-link layout-topbar-button" (click)="changeTheme('md-dark-indigo', 'dark')">Premium</button>
+        <button class="p-link layout-topbar-button" routerLink="/cart">
+            <i class="pi pi-shopping-cart"></i>
         </button>
         <button class="p-link layout-topbar-button" >
                 <i class="pi pi-user" (click) = "menuVisible = !menuVisible"></i>

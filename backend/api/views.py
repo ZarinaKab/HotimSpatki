@@ -31,7 +31,7 @@ class VacancyView(GenericAPIView, mixins.RetrieveModelMixin, mixins.DestroyModel
         req_com.name = data.get('name', req_com.name)
         req_com.description = data.get('description', req_com.description)
         req_com.inventoryStatus = data.get('inventoryStatus', req_com.inventoryStatus)
-        req_com.category = data.get
+        req_com.category = data.get('category', req_com.category)
         req_com.save()
         return Response(ProductSerializer(req_com).data)
 

@@ -3,26 +3,19 @@ interface InventoryStatus {
     value: string;
 }
 
+
 export interface Product {
     id?: string;
-    code?: string;
     name?: string;
     description?: string;
     price?: number;
-    quantity?: number;
     inventoryStatus?: InventoryStatus;
-    category?: string;
+    category?: Category;
     image?: string;
     rating?: number;
 }
 
-export interface Categories {
-    id?: number;
-    name?:string;
-}
-
-export interface Users {
-    id?: number;
-    username?: string;
-    password?:string;
+export interface Category {
+    id?:number;
+    name: string;
 }
