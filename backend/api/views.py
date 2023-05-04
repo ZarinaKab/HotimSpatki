@@ -1,86 +1,177 @@
+import stripe
 import json
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.views.generic import ListView
-from rest_framework.generics import GenericAPIView
-from rest_framework import mixins, views
-
-from api.serializers import ProductSerializer, CategorySerializer
-from api.models import Product, Category
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status, generics, permissions
+from rest_framework.decorators import api_view
+from .models import Product, Category
+from .serializers import ProductModelSerializer, CategoryModelSerializer, CategorySerializer, ProductSerializer, \
+    LogoutSerializer, LoginSerializer, RegisterSerializer
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-class VacanciesView(GenericAPIView, mixins.CreateModelMixin, mixins.ListModelMixin):
-    serializer_class = ProductSerializer
+class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductListByCategoryView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        category_id = self.kwargs['category_id']
+        category = get_object_or_404(Category, pk=category_id)
+        return Product.objects.filter(category=category)
+
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class VacancyView(GenericAPIView, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
-    def get(self, request, id):
-        req_com = Product.objects.get(id=id)
-        return Response(ProductSerializer(req_com).data)
-
-    def put(self, request, id):
-        req_com = Product.objects.get(id=id)
-        data = json.loads(request.body)
-        req_com.name = data.get('name', req_com.name)
-        req_com.description = data.get('description', req_com.description)
-        req_com.inventoryStatus = data.get('inventoryStatus', req_com.inventoryStatus)
-        req_com.category = data.get('category', req_com.category)
-        req_com.save()
-        return Response(ProductSerializer(req_com).data)
-
-    def delete(self, request, id):
-        req_com = Category.objects.get(id=id)
-        temp = req_com
-        req_com.delete()
-        return Response(CategorySerializer(temp).data)
-
-
-class VacanciesTop(ListView, views.APIView):
-
-    def get(self, request):
-        queryset = Product.objects.all()
-        queryset1 = queryset.order_by("-salary")
-        return Response(ProductSerializer(queryset1, many=True).data)
+        categories = self.get_queryset()
+        serializer = self.get_serializer(categories, many=True)
+        data = serializer.data
+        for category in data:
+            products = Product.objects.filter(category_id=category.get('id'), category__is_premium=True)
+            product_serializer = ProductSerializer(products, many=True)
+            category['products'] = product_serializer.data
+        return Response(data)
 
 
 
-class CompaniesView(views.APIView):
+class CategoryDetail(APIView):
+    def get(self, request, pk):
+        category = Category.objects.get(pk=pk)
+        serializer = CategoryModelSerializer(category)
+        return Response(serializer.data)
 
-    def get(self, request):
-        return Response(CategorySerializer(Category.objects.all(), many=True).data)
+
+class ProductCreateView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        data = json.loads(request.body)
-        com = Category.objects.create(name=data.get('name', ''))
-        return Response(CategorySerializer(com).data)
+        seller = request.user.userprofile
+        data = request.data.copy()
+        data['seller'] = seller.id
+        serializer = ProductModelSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CompanyView(views.APIView):
-    def get(self, request, id):
-        req_com = Category.objects.get(id=id)
-        return Response(CategorySerializer(req_com).data)
+@api_view(['GET'])
+def category_list(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
 
-    def put(self, request, id):
-        req_com = Category.objects.get(id=id)
-        data = json.loads(request.body)
-        req_com.name = data.get('name', req_com.name)
-        req_com.save()
-        return Response(CategorySerializer(req_com).data)
 
-    def delete(self, request, id):
-        req_com = Category.objects.get(id=id)
-        temp = req_com
-        req_com.delete()
-        return Response(CategorySerializer(temp).data)
+class ProductDetail(APIView):
+    def get(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        serializer = ProductModelSerializer(product)
+        return Response(serializer.data)
 
-class CompanyVacanciesView(views.APIView):
 
-    def get(self, request, id):
-        return JsonResponse(list(Product.objects.filter(company_id=id).values()), safe=False)
+class CategoryDetail(APIView):
+    def get(self, request, pk):
+        category = Category.objects.get(pk=pk)
+        serializer = CategoryModelSerializer(category)
+        return Response(serializer.data)
+
+
+def post(request):
+    seller = request.user.userprofile
+    data = request.data.copy()
+    data['seller'] = seller.id
+    serializer = ProductModelSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductCreateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class RegisterView(generics.GenericAPIView):
+    serializer_class = RegisterSerializer
+
+    def post(self, request):
+        user = request.data
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        user_data = serializer.data
+        return Response(user_data, status=status.HTTP_201_CREATED)
+
+
+class LoginAPIView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def createCharge(token):
+    charge = stripe.Charge.create(
+        amount=500,
+        currency='usd',
+        description='A Django charge',
+        source=token,
+        shipping={
+            "name": "Jenny Rosen",
+            "address": {
+                "line1": "510 Townsend St",
+                "postal_code": "98140",
+                "city": "San Francisco",
+                "state": "CA",
+                "country": "US",
+            },
+        }
+    )
+    return charge
+
+
+@csrf_exempt
+def generateToken(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        doe = body['doe']
+        month = int(doe.split('/')[0])
+        year = int('20{0}'.format(doe.split('/')[1]))
+        cardData = {
+            "number": body['card'],
+            "exp_month": month,
+            "exp_year": year,
+            "cvc": body['cvc'],
+        }
+        print(cardData)
+        token = stripe.Token.create(
+            card=cardData
+        )
+        charge = createCharge(token.id)
+        return JsonResponse({
+            "status": charge.status
+        })
