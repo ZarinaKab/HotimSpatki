@@ -26,7 +26,7 @@ interface LayoutState {
 export class LayoutService {
 
     changePremium(){
-        this.config.isPremium = true
+        this.config.isPremium = false
     }
     isPremiumUser() {
         return this.config.isPremium
