@@ -50,12 +50,15 @@ export class AppTopBarComponent{
     }
     changeTheme(theme: string, colorScheme: string) {
         const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
-        const newHref = themeLink.getAttribute('href')!.replace(this.layoutService.config.theme, "md-dark-indigo");
+        const newHref = themeLink.getAttribute('href')!.replace(this.layoutService.config.theme, theme);
         this.layoutService.config.colorScheme
         AppConfigComponent.replaceThemeLink(newHref, () => {
             this.layoutService.config.theme = theme;
             this.layoutService.config.colorScheme = colorScheme;
             this.layoutService.onConfigUpdate();
+            this.layoutService.changePremium();
         });
+        console.log(this.layoutService.isPremiumUser)
     }
+
 }

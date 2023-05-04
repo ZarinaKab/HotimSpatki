@@ -54,7 +54,8 @@ class Product(models.Model):
     inventoryStatus = models.ForeignKey(InventoryStatus, on_delete=models.CASCADE, related_name='products')
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
     buyers = models.ManyToManyField(User, through='SavedProduct', related_name='saved_products')
-    category = models.ManyToManyField(Category)
+    category = models.ManyToManyField(Category, related_name='category')
+    image = models.TextField()
 
     class Meta:
         verbose_name = 'Product'
@@ -70,6 +71,7 @@ class Product(models.Model):
             'inventoryStatus': self.inventoryStatus,
             'seller': self.seller,
             'buyers': self.buyers,
+            'image': self.image,
         }
 
 
@@ -77,6 +79,7 @@ class SavedProduct(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     is_seller = models.BooleanField(default=False)
+    image = models.TextField()
 
     class Meta:
         verbose_name = 'SavedProduct'
@@ -88,6 +91,7 @@ class SavedProduct(models.Model):
             'user': self.user,
             'product': self.product,
             'is_seller': self.is_seller,
+            'image': self.image,
         }
 
 

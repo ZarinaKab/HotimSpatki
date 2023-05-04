@@ -7,6 +7,7 @@ export interface AppConfig {
     theme: string;
     menuMode: string;
     scale: number;
+    isPremium: boolean;
 }
 
 interface LayoutState {
@@ -24,12 +25,20 @@ interface LayoutState {
 })
 export class LayoutService {
 
+    changePremium(){
+        this.config.isPremium = true
+    }
+    isPremiumUser() {
+        return this.config.isPremium
+    }
+
     config: AppConfig = {
         inputStyle: 'outlined',
         menuMode: 'static',
         colorScheme: 'light',
-        theme: 'mdc-light-indigo',
+        theme: 'md-dark-indigo',
         scale: 14,
+        isPremium: false,
     };
 
     state: LayoutState = {

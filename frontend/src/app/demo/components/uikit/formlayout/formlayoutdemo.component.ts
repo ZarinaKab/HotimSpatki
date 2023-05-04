@@ -60,7 +60,6 @@ export class FormLayoutDemoComponent implements OnInit{
             { field: 'product', header: 'Product' },
             { field: 'price', header: 'Price' },
             { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
             { field: 'inventoryStatus', header: 'Status' }
         ];
 

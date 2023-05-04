@@ -12,7 +12,7 @@ export interface Product {
     inventoryStatus?: InventoryStatus;
     category?: Category;
     image?: string;
-    rating?: number;
+
 }
 
 export interface Category {

@@ -16,6 +16,6 @@ urlpatterns = [
     path('categories/<int:pk>/', CategoryDetail.as_view(), name='category-detail'),
     path('products/create/', ProductCreateView.as_view(), name='product-create'),
     # path('charge/', views.charge, name='charge'),
-    path('categories/<int:pk>/', ProductListByCategoryView.as_view(), name='product_list_by_category'),
+    re_path(r'^categories/(?P<pk>\d+)/$', ProductListByCategoryView.as_view(), name='product_list_by_category'),
     path('pay', views.generateToken)
 ]
