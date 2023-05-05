@@ -18,8 +18,12 @@ export class ProductService {
         });
     }
 
-    getProduct(id:number): Observable<Product> {
-        return this.http.get<Product>(`${this.BASE_URl}api/products/${id}/`);
+    getProducts(): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.BASE_URl}/api/products/`)
+    }
+
+    getProduct(id: number): Observable<Product> {
+        return this.http.get<Product>(`${this.BASE_URl}/api/products/${id}/`)
     }
 
     createProduct (

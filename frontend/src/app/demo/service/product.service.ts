@@ -1,18 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Product } from '../api/product';
+import {Observable} from "rxjs";
 
 @Injectable()
 export class ProductService {
-
+    BASE_URL = 'http://127.0.0.1:8000'
     constructor(private http: HttpClient) { }
 
 
-    getProducts() {
-        return this.http.get<any>('assets/demo/data/products.json')
-            .toPromise()
-            .then(res => res.data as Product[])
-            .then(data => data);
+    getProducts(): Observable<Product[]> {
+        return this.http.get<Product[]>(`${this.BASE_URL}/api/products/`)
+    }
+
+    getProduct(id: number): Observable<Product> {
+        return this.http.get<Product>(`${this.BASE_URL}/api/products/${id}`)
     }
 
 }

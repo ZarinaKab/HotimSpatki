@@ -44,14 +44,14 @@ export class LoginComponent implements OnInit{
             }
         }
 
-        goBack(): void {
-            this.location.back();
-        }
+        // goBack(): void {
+        //     this.location.back();
+        // }
 
         loginFunc(): void {
             this.categoryService.login(this.email, this.password).subscribe((data) => {
 
-                localStorage.setItem('token', data.token);
+                // localStorage.setItem('token', data.token);
                 this.logged = true;
                 this.email = '';
                 this.password = '';

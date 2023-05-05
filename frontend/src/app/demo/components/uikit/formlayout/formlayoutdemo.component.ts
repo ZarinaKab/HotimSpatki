@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/demo/api/product';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { ProductService } from 'src/app/demo/service/product.service';
+import { ProductService} from "../../../../product.service";
+
 @Component({
     templateUrl: './formlayoutdemo.component.html',
     providers: [MessageService]
@@ -27,39 +28,19 @@ export class FormLayoutDemoComponent implements OnInit{
     statuses: any[] = [];
 
 
-    selectedState: any = null;
-
-    states: any[] = [
-        {name: 'Arizona', code: 'Arizona'},
-        {name: 'California', value: 'California'},
-        {name: 'Florida', code: 'Florida'},
-        {name: 'Ohio', code: 'Ohio'},
-        {name: 'Washington', code: 'Washington'}
-    ];
-
-    dropdownItems = [
-        { name: 'Option 1', code: 'Option 1' },
-        { name: 'Option 2', code: 'Option 2' },
-        { name: 'Option 3', code: 'Option 3' }
-    ];
-
-    cities1: any[] = [];
-
-    cities2: any[] = [];
-
-    city1: any = null;
-
-    city2: any = null;
-
     constructor(private productService: ProductService, private messageService: MessageService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
+        this.productService.getProducts().subscribe(data => {
+            this.products = data
+            console.log(data)
 
+        });
         this.cols = [
             { field: 'product', header: 'Product' },
             { field: 'price', header: 'Price' },
             { field: 'category', header: 'Category' },
+            { field: 'seller', header: 'Seller' },
             { field: 'inventoryStatus', header: 'Status' }
         ];
 
@@ -156,6 +137,14 @@ export class FormLayoutDemoComponent implements OnInit{
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    getSellerId(id: number){
+        return this.productService.getProduct(id).subscribe(
+            data => {
+                this.product = data
+                return this.product.seller?.id
+            })
     }
 
 }

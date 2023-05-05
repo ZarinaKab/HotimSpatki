@@ -20,7 +20,7 @@ export class ListDemoComponent implements OnInit {
     constructor(private productService: ProductService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
+        this.productService.getProducts().subscribe(data => this.products = data);
 
         this.sortOptions = [
             { label: 'Price High to Low', value: '!price' },

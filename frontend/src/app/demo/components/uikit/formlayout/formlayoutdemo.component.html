@@ -44,12 +44,12 @@
                             <th style="width: 3rem">
                                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                             </th>
-                            <th pSortableColumn="code">Code <p-sortIcon field="code"></p-sortIcon></th>
+<!--                            <th pSortableColumn="code">Code <p-sortIcon field="code"></p-sortIcon></th>-->
                             <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                             <th>Image</th>
                             <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
                             <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
-                            <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>
+                            <th pSortableColumn="Seller"> Seller <p-sortIcon field="seller"></p-sortIcon></th>
                             <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
                             <th></th>
                         </tr>
@@ -59,15 +59,15 @@
                             <td>
                                 <p-tableCheckbox [value]="product"></p-tableCheckbox>
                             </td>
-                            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Code</span>
-                                {{product.code || product.id}}
-                            </td>
+<!--                            <td style="width:14%; min-width:10rem;"><span class="p-column-title">Code</span>-->
+<!--                                {{product.code || product.id}}-->
+<!--                            </td>-->
                             <td style="width:14%; min-width:10rem;">
                                 <span class="p-column-title">Name</span>
                                 {{product.name}}
                             </td>
                             <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
-                                <img [src]="'assets/demo/images/product/' + product.image" [alt]="product.name" width="100" class="shadow-4" />
+                                <img [src]="product.image" [alt]="product.name" width="100" class="shadow-4" />
                             </td>
                             <td style="width:14%; min-width:8rem;">
                                 <span class="p-column-title">Price</span>
@@ -75,11 +75,13 @@
                             </td>
                             <td style="width:14%; min-width:10rem;">
                                 <span class="p-column-title">Category</span>
-                                {{product.category}}
+                                {{product.categories}}
                             </td>
-                            <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Reviews</span>
-                                <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                            <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Seller</span>
+<!--                                <p-rating [ngModel]="product.seller" [readonly]="true" [cancel]="false"></p-rating>-->
+                                {{ getSellerId(product.id)}}
                             </td>
+
                             <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
                                 <span [class]="'product-badge status-' + (product.inventoryStatus ? product.inventoryStatus.toLowerCase() : '')">{{product.inventoryStatus}}</span>
                             </td>
@@ -116,26 +118,48 @@
                                 <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
                             </ng-template>
                         </p-dropdown>
+                        <label for="image">Image</label>
+                        <textarea id="image" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
                     </div>
 
                     <div class="field">
                         <label class="mb-3">Category</label>
                         <div class="formgrid grid">
                             <div class="field-radiobutton col-6">
-                                <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category"></p-radioButton>
-                                <label for="category1">Accessories</label>
+                                <p-radioButton id="category1" name="category" value="Teacher" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category1">Teacher</label>
                             </div>
                             <div class="field-radiobutton col-6">
-                                <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category"></p-radioButton>
-                                <label for="category2">Clothing</label>
+                                <p-radioButton id="category2" name="category" value="Babysitter" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category2">Babysitter</label>
                             </div>
                             <div class="field-radiobutton col-6">
-                                <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category"></p-radioButton>
-                                <label for="category3">Electronics</label>
+                                <p-radioButton id="category3" name="category" value="Clean" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category3">Clean</label>
                             </div>
                             <div class="field-radiobutton col-6">
-                                <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category"></p-radioButton>
-                                <label for="category4">Fitness</label>
+                                <p-radioButton id="category4" name="category" value="Repair" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">Repair</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <p-radioButton id="category5" name="category" value="Cook" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">Cook</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <p-radioButton id="category6" name="category" value="Electrician" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">Electrician</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <p-radioButton id="category7" name="category" value="BioProducts" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">BioProducts</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <p-radioButton id="category8" name="category" value="Friend" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">Friend</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <p-radioButton id="category9" name="category" value="Killer" [(ngModel)]="product.category"></p-radioButton>
+                                <label for="category4">Killer</label>
                             </div>
                         </div>
                     </div>

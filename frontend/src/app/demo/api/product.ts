@@ -1,3 +1,5 @@
+import {User} from "../../layout/models";
+
 interface InventoryStatus {
     label: string;
     value: string;
@@ -12,6 +14,7 @@ export interface Product {
     inventoryStatus?: InventoryStatus;
     category?: Category;
     image?: string;
+    seller?: User;
 
 }
 
