@@ -7,6 +7,7 @@ from .models import Product, Category, User
 
 
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
         fields = '__all__'
@@ -52,12 +53,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=68, min_length=6, write_only=True)
+    password = serializers.CharField(write_only=True)
     tokens = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['password', 'username', 'tokens']
+        fields = ['email', 'password', 'tokens']
 
     def get_tokens(self, obj):
         user = User.objects.get(username=obj['username'])
@@ -68,8 +69,10 @@ class LoginSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        username = attrs.get('username', '')
+        username = attrs.get('email', '')
         password = attrs.get('password', '')
+        print(f"username = {username}")
+        print(f"password = {password}")
         user = auth.authenticate(username=username, password=password)
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again')

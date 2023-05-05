@@ -5,6 +5,8 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AppConfigComponent } from './config/app.config.component';
 import { PremiumItem } from './premiumitems';
 import { AppMenuComponent } from './app.menu.component';
+import {LoginService} from "./login.service";
+
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html',
@@ -22,7 +24,7 @@ export class AppTopBarComponent{
     @ViewChild('topbarmenu') menu!: ElementRef;
     static layoutService: any;
 
-    constructor(public layoutService: LayoutService) {
+    constructor(public layoutService: LayoutService, public log: LoginService) {
         this.tieredItems = [
             {
                 label: 'Profile',
@@ -44,7 +46,8 @@ export class AppTopBarComponent{
             {
                 label: 'Log-out',
                 icon: 'pi pi-fw pi-sign-out',
-                routerLink: ['']
+                routerLink: [''],
+                command: event => log.logout()
             }
         ]
     }

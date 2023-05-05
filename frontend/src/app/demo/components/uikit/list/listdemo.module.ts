@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { RatingModule } from 'primeng/rating';
 import { ButtonModule } from 'primeng/button';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
 	imports: [
@@ -22,7 +23,8 @@ import { ButtonModule } from 'primeng/button';
 		InputTextModule,
 		DropdownModule,
 		RatingModule,
-		ButtonModule
+		ButtonModule,
+        HttpClientModule
 	],
 	declarations: [ListDemoComponent]
 })

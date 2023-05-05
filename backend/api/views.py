@@ -3,7 +3,7 @@ import json
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, serializers
 from rest_framework.decorators import api_view
 from .models import Product, Category
 from .serializers import ProductModelSerializer, CategoryModelSerializer, CategorySerializer, ProductSerializer, \
@@ -17,6 +17,13 @@ from rest_framework.response import Response
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    def post(self, request):
+        # permission_classes = (IsAuthenticated,)
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 
 class ProductListByCategoryView(generics.ListAPIView):
@@ -51,18 +58,18 @@ class CategoryDetail(APIView):
         return Response(serializer.data)
 
 
-class ProductCreateView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        seller = request.user.userprofile
-        data = request.data.copy()
-        data['seller'] = seller.id
-        serializer = ProductModelSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class ProductCreateView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         seller = request.user.userprofile
+#         data = request.data.copy()
+#         data['seller'] = seller.id
+#         serializer = ProductModelSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -72,12 +79,28 @@ def category_list(request):
     return Response(serializer.data)
 
 
-class ProductDetail(APIView):
-    def get(self, request, pk):
-        product = Product.objects.get(pk=pk)
-        serializer = ProductModelSerializer(product)
-        return Response(serializer.data)
+@api_view(['GET', 'PUT', 'DELETE'])
+def ProductDetail(request, pk):
+    try:
+        prod = Product.objects.get(id=pk)
+    except Product.DoesNotExist as e:
+        return Response({'message': str(e)}, status=400)
 
+    if request.method == 'GET':
+        serializer = ProductSerializer(prod)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = ProductSerializer(instance=prod, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        print(serializer.errors)
+        return Response(serializer.errors)
+    elif request.method == 'DELETE':
+        # permission_classes = (IsAuthenticated,)
+        ret = ProductSerializer(prod).data
+        prod.delete()
+        return Response(ret)
 
 class CategoryDetail(APIView):
     def get(self, request, pk):
@@ -95,11 +118,6 @@ def post(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductCreateView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
 class RegisterView(generics.GenericAPIView):
@@ -175,3 +193,17 @@ def generateToken(request):
         return JsonResponse({
             "status": charge.status
         })
+
+
+def CategoryProducts(request, pk):
+    class ProductSerializer(serializers.ModelSerializer):
+        category = serializers.StringRelatedField(many=True)
+
+        class Meta:
+            model = Product
+            fields = ['id', 'name', 'description', 'price', 'category', 'inventoryStatus', 'seller', 'buyers', 'image']
+
+    products = Product.objects.filter(category=pk)
+    serialized_products = ProductSerializer(products, many=True)
+    return JsonResponse(serialized_products.data, safe=False)
+

@@ -5,7 +5,6 @@ import {Router} from '@angular/router';
 import {Location} from '@angular/common';
 import { LoginService } from "../../../../layout/login.service";
 import {CategoryService} from "../../../../category.service";
-
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -20,45 +19,40 @@ import {CategoryService} from "../../../../category.service";
 })
 export class LoginComponent implements OnInit{
 
-    valCheck: string[] = ['remember'];
+
 
     password!: string;
+    username!: string;
+    logged = false;
 
     constructor(
-        public layoutService: LayoutService,
-        private router: Router,
-        private loginService: LoginService,
-        private location: Location,
         private categoryService: CategoryService
 
     ) {
     }
-    logged = false;
-    email = '';
-    password1 = '';
+    login(){
+        this.categoryService.login(this.username, this.password).subscribe((data) => {
 
-        ngOnInit(): void {
-            const token = localStorage.getItem('token');
-            if(token) {
-                this.logged = true;
-            }
-        }
+            localStorage.setItem('token', data.token);
 
-        // goBack(): void {
-        //     this.location.back();
-        // }
-
-        loginFunc(): void {
-            this.categoryService.login(this.email, this.password).subscribe((data) => {
-
-                // localStorage.setItem('token', data.token);
-                this.logged = true;
-                this.email = '';
-                this.password = '';
-            });
-        }
-    logout() {
-        this.logged = false;
-        localStorage.removeItem('token');
+            this.logged = true;
+            this.username = '';
+            this.password = '';
+        });
     }
+
+    ngOnInit(): void {
+        const token = localStorage.getItem('token');
+        if(token) {
+            this.logged = true;
+        }
+    }
+
+
+
+
+    // logout() {
+    //     this.logged = false;
+    //     localStorage.removeItem('token');
+    // }
 }

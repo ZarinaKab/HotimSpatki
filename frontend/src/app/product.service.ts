@@ -3,16 +3,17 @@ import {HttpClient} from "@angular/common/http";
 import {AuthToken} from "./layout/models";
 import {Product} from "./demo/api/product";
 import {Observable} from "rxjs";
+import * as process from "process";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductService {
-    BASE_URl = 'http://127.0.0.1:8000/';
+    BASE_URl = 'http://127.0.0.1:8000';
     constructor(private http:HttpClient) { }
     // @ts-ignore
     login(email, password): Observable<AuthToken> {
-        return this.http.post<AuthToken>(`${this.BASE_URl}api/login/`, {
+        return this.http.post<AuthToken>(`${this.BASE_URl}/api/login/`, {
             email,
             password
         });
@@ -27,52 +28,36 @@ export class ProductService {
     }
 
     createProduct (
-        productName: string,
-        productDescription: string,
-        productPrice: number,
-        productInventoryStatusID: number,
-        productSellerID: number,
-        productBuyersID: number,
-        productCategoryID: number,
-        productImage: string,
+        product : Product
     ): Observable<Product> {
+        console.log(product)
+        console.log(`${this.BASE_URl}/api/products/`)
         return this.http.post<Product>(
-            `${this.BASE_URl}/api/products/create/`,
+            `${this.BASE_URl}/api/products/`,
             {
-                name: productName,
-                description: productDescription,
-                price: productPrice,
-                inventoryStatus: productInventoryStatusID,
-                seller: productSellerID,
-                buyers: productBuyersID,
-                category: productCategoryID,
-                image: productImage
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.jobscan.co%2Fblog%2Fjobs-for-former-teachers%2F&psig=AOvVaw0cTHX0wbRQYrwGLMYLXNNS&ust=1683306239030000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOjbtMWS3P4CFQAAAAAdAAAAABAE",
+                inventoryStatus: 1,
+                category: [1],
             }
         )
     }
 
     updateProduct (
-        id: number,
-        productName: string,
-        productDescription: string,
-        productPrice: number,
-        productInventoryStatusID: number,
-        productSellerID: number,
-        productBuyersID: number,
-        productCategoryID: number,
-        productImage: string,
+        product:Product
     ): Observable<Product> {
         return this.http.put<Product>(
-            `${this.BASE_URl}/api/products/${id}/`,
+            `${this.BASE_URl}/api/products/${product.id}/`,
             {
-                name: productName,
-                description: productDescription,
-                price: productPrice,
-                inventoryStatus: productInventoryStatusID,
-                seller: productSellerID,
-                buyers: productBuyersID,
-                category: productCategoryID,
-                image: productImage
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                image: product.image,
+                inventoryStatus: product.inventoryStatus,
+                category: product.category,
+                seller: product.seller
             }
         )
     }

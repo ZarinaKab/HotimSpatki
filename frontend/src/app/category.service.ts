@@ -13,9 +13,9 @@ export class CategoryService {
     BASE_URl = 'http://127.0.0.1:8000/';
     constructor(private http:HttpClient) { }
     // @ts-ignore
-    login(email, password): Observable<AuthToken> {
+    login(username, password): Observable<AuthToken> {
         return this.http.post<AuthToken>(`${this.BASE_URl}api/login/`, {
-            email,
+            username,
             password
         });
     }

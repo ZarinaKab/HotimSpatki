@@ -10,8 +10,8 @@
                 </div>
 
                 <div>
-                    <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
-                    <input id="email" type="text" placeholder="Email address" pInputText [(ngModel)]="email" class="w-full md:w-30rem mb-5" style="padding:1rem">
+                    <label for="email" class="block text-900 text-xl font-medium mb-2">Username</label>
+                    <input id="email" type="text" placeholder="Username" pInputText [(ngModel)]="username" class="w-full md:w-30rem mb-5" style="padding:1rem">
 
                     <label for="password" class="block text-900 font-medium text-xl mb-2">Password</label>
                     <input id="password" type="password" placeholder="Password" pInputText [(ngModel)]="password" class="w-full md:w-30rem mb-5" style="padding:1rem">
@@ -24,7 +24,7 @@
 <!--                        <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(&#45;&#45;primary-color)">Forgot password?</a>-->
 <!--                    </div>-->
 <!--                    [routerLink]="['/auth/access']"-->
-                    <button pButton pRipple label="Log In" class="w-full p-3 text-xl" (click)="loginFunc()" [routerLink]="['/auth/access']"></button>
+                    <button pButton pRipple label="Log In" class="w-full p-3 text-xl" (click)="login()" [routerLink]="['/auth/access']"></button>
                 </div>
             </div>
         </div>

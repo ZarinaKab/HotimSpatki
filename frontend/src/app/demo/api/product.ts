@@ -7,10 +7,10 @@ interface InventoryStatus {
 
 
 export interface Product {
-    id?: string;
+    id?: number;
     name?: string;
     description?: string;
-    price?: number;
+    price?: string;
     inventoryStatus?: InventoryStatus;
     category?: Category;
     image?: string;

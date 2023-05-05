@@ -9,11 +9,13 @@ import { ProductService} from "../../../../product.service";
     providers: [MessageService]
 })
 export class FormLayoutDemoComponent implements OnInit{
+    // productName: string = '';
     productDialog: boolean = false;
 
     deleteProductDialog: boolean = false;
 
     deleteProductsDialog: boolean = false;
+    createDialog: boolean = false;
 
     products: Product[] = [];
 
@@ -55,6 +57,7 @@ export class FormLayoutDemoComponent implements OnInit{
         this.product = {};
         this.submitted = false;
         this.productDialog = true;
+        this.createDialog = true;
     }
 
     deleteSelectedProducts() {
@@ -63,12 +66,22 @@ export class FormLayoutDemoComponent implements OnInit{
 
     editProduct(product: Product) {
         this.product = { ...product };
+        this.createDialog = false;
         this.productDialog = true;
     }
 
     deleteProduct(product: Product) {
-        this.deleteProductDialog = true;
-        this.product = { ...product };
+        product.id = product.id ?? -1
+        if (product.id === -1){
+            this.products = this.products.filter((cur_product) => cur_product !== product)
+        }
+        else {
+            this.productService.deleteProduct(product.id).subscribe((product_del) => {
+                this.products = this.products.filter((cur_product) => cur_product.id !== product_del.id)
+            })
+        }
+        // this.deleteProductDialog = true;
+        // this.product = { ...product };
     }
 
     confirmDeleteSelected() {
@@ -82,7 +95,7 @@ export class FormLayoutDemoComponent implements OnInit{
         this.deleteProductDialog = false;
         this.products = this.products.filter(val => val.id !== this.product.id);
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
+        // this.product = {};
     }
 
     hideDialog() {
@@ -91,30 +104,23 @@ export class FormLayoutDemoComponent implements OnInit{
     }
 
     saveProduct() {
-        this.submitted = true;
-
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-                this.products[this.findIndexById(this.product.id)] = this.product;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                this.product.id = this.createId();
-                this.product.image = 'product-placeholder.svg';
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-                this.products.push(this.product);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            this.products = [...this.products];
-            this.productDialog = false;
-            this.product = {};
+        if (this.createDialog) {
+            this.productService.createProduct(
+                this.product
+            ).subscribe((Product) => {
+                this.products.push(Product)
+            })
+        }else{
+            console.log(this.product)
+            this.productService.updateProduct(this.product).subscribe((product) => {
+                console.log(product)
+                this.products = this.products.filter((cur_product) => cur_product.id !== product.id)
+                this.products.push(product)
+            })
         }
     }
 
-    findIndexById(id: string): number {
+    findIndexById(id: number): number {
         let index = -1;
         for (let i = 0; i < this.products.length; i++) {
             if (this.products[i].id === id) {
@@ -126,14 +132,14 @@ export class FormLayoutDemoComponent implements OnInit{
         return index;
     }
 
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
+    // createId(): string {
+    //     let id = '';
+    //     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    //     for (let i = 0; i < 5; i++) {
+    //         id += chars.charAt(Math.floor(Math.random() * chars.length));
+    //     }
+    //     return id;
+    // }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
@@ -141,7 +147,7 @@ export class FormLayoutDemoComponent implements OnInit{
 
     getSellerId(id: number){
         return this.productService.getProduct(id).subscribe(
-            data => {
+            (data) => {
                 this.product = data
                 return this.product.seller?.id
             })
